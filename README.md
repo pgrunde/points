@@ -10,13 +10,14 @@ A working [installation of Go](https://golang.org/doc/install), and some [comman
 
 # Setup
 
-Make a folder in your [GOPATH](https://golang.org/doc/code.html#GOPATH)- if you're using Github, I recommend `github.com/$username$/scrabble` and create our main file, `touch scrabble.go`. Open that up in your favorite editor and let's begin!
+
+Make a folder in your [GOPATH](https://golang.org/doc/code.html#GOPATH)- if you're using Github, I recommend `github.com/$username$/scrabble`. Next create our main file inside, `touch scrabble.go`. Open that up in your favorite editor and let's begin!
 
 # The main function
 
-Every application which compiles and runs will have a `main()` function which starts off your program. Libraries, called packages in Go, do not have a main function, they just give you cool functions and tools to play with in your own app- we're going to only use packages that come from Go's [powerful standard library](https://golang.org/pkg/#stdlib) (and a package of our own design!).
+Every application which compiles and runs will have a `main()` function whose job is to start off your program. Libraries, called packages in Go, do not have a main function, they just give you cool functions and tools to play with in your own app- we're going to only use packages that come from Go's [powerful standard library](https://golang.org/pkg/#stdlib) (and a package of our own design!).
 
-Each Go file begins with a package declaration that says to your application "Hey App, all the contents of this here file belongs to this package." The beginning of our program, the file containing the `main()` function, is called `package main`. If you tested your Go installation, you should have seen something like this:
+Each Go file begins with a package declaration that says to your application "*Hey App, all the contents of this here file belong to this package.*" The beginning of our program, the file containing the `main()` function, lives in `package main`. If you [tested your Go installation](https://golang.org/doc/install#testing), you should have seen something like this:
 ```
 package main
 
@@ -26,6 +27,19 @@ func main() {
   fmt.Printf("hello, world\n")
 }
 ```
-A similar default setup can be found at [The Go Playground](http://play.golang.org/), a nifty tool which allows you to quickly play with and share Go code snippets. 
+(A similar default setup can be found at [The Go Playground](http://play.golang.org/), a nifty tool which allows you to quickly play with and share Go code snippets.)
 
-After the package declaration we see the word `import`, a [keyword](https://golang.org/ref/spec#Keywords) which tells the app which imported packages will be used in this file.`"fmt"` means we're importing the [fmt package](https://golang.org/pkg/fmt/) from the standard library.
+After the package declaration we see the word `import`, a [keyword](https://golang.org/ref/spec#Keywords) which tells the app which imported packages will be used in this file. The `"fmt"` means we're importing the [fmt package](https://golang.org/pkg/fmt/) from the standard library because we need to print something to the command line. It should be noted that the main [function](http://www.cs.utah.edu/~germain/PPS/Topics/functions.html), like all Go functions, starts with the keyword `func`. We'll go into further detail regarding functions later on.
+
+Before we can ever keep track of points, we need to know how many players are actually in the game. Let us create a [variable](https://golang.org/ref/spec#Variables) and store an integer in it, then print out to the user that the game is starting with that many players.
+```
+package main
+
+import "fmt"
+
+func main() {
+  var count int
+  fmt.Printf("Creating game with %d players\n", count)
+}
+```
+If you save and run this program with `go run scrabble.go` the console will print 'Creating game with 0 players'. Now wait just a minute, I never even typed a `0` this whole time, how did `%d` turn into that? The trick is in [the `Printf` function](https://golang.org/pkg/fmt/#Printf), which you'll notice is utilized by first typing out what package it comes from (fmt), followed by a period and then the function name.
