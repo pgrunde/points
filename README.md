@@ -64,7 +64,9 @@ The `Printf` code is performing what is called [string interpolation](https://en
 
 # Making your own function
 
-While there is plenty of fun to be had only using the standard library's functions, it is much more enjoyable to write your own. Right now we've 'hard coded' the number of players into our program to always be 5 because we set `count` to that value. Instead, let us create a function which [returns](https://golang.org/ref/spec#Return_statements) the number of players in our game after prompting the user for a number. Fundamentally [functions](https://golang.org/ref/spec#Function_types) take inputs, and produce outputs. Writing them begins with the keyword `func`, a name, a set of optional arguments (the inputs to our function), and a set of optional return values (the outputs of our function) followed by the body of the function. For now, we'll write our function to take no arguments and return 5, so our program will funciton the same:
+While there is plenty of fun to be had only using the standard library's functions, it is much more enjoyable to write your own. Right now we've 'hard coded' the number of players into our program to always be 5 because we set `count` to that value. Instead, let us create a function which [returns](https://golang.org/ref/spec#Return_statements) the number of players in our game after prompting the user for a number. 
+
+Fundamentally [functions](https://golang.org/ref/spec#Function_types) take inputs, and produce outputs. Writing them begins with the keyword `func`, a name, a set of optional arguments (the inputs to our function), and a set of optional return values (the outputs of our function) followed by the body of the function. For now, we'll write our function to take no arguments and return 5, so our program will funciton the same:
 ```
 package main
 
@@ -79,4 +81,4 @@ func PlayerCount() int {
   return 5
 }
 ```
-The `fmt.Printf` function took arguments which were declared inside the parenthesis, however `PlayerCount` takes no arguments. It does, however, return an integer, so we need to declare that return type after the parenthesis.
+The `fmt.Printf` function took arguments which were declared inside the parenthesis, however `PlayerCount` takes no arguments. It does, however, return an integer, so we need to declare that return type after the parenthesis. The next part of our function is wrapped in curly bracket delimiters and is called the function [block](https://golang.org/ref/spec#Blocks). All the lines of code inside `{` and `}` run whenever the function is used. When the function code is running, the `return` keyword tells the function to exit and return whatever value comes after `return`, which in our case is the integer 5. Go can perform math with integers, so `return 2 + 3`, `return 7 - 1` would all return the same thing as `return 5`.
