@@ -44,7 +44,7 @@ func main() {
   fmt.Printf("Creating game with %d players\n", count)
 }
 ```
-If you save and run this program with `go run scrabble.go` the console will print '*Creating game with 0 players*'. Now wait just a minute, I never even typed a `0` this whole time, how did `%d` turn into that? Variables in Go have what are called [zero values](https://golang.org/ref/spec#The_zero_value), and the zero value of an integer is, predictably, `0`. When we say `var count int`, two things are actually going in our computer's little digital brain. First it is allocating an *address* for your variable, this acts like a library reference card detailing the place you'd find a book. In the computer's case, the address is a reference that points you to a value, not a book (if you are too young to remember what a library reference card is, go ask an old person). Because we did not set the value of our variable explicitly in our code, its address automatically got the zero value of an integer, 0. You can declare *and* set a variable with a fancy tool (called an operator) `:=` like this `count := 5`, which will set the variable `count` to have an address referencing the value of 5. Go attempts to figure out what type you meant, and numbers will default to `int`. Change your main function to use this [short variable declaration](https://golang.org/ref/spec#Short_variable_declarations):
+If you save and run this program with `go run scrabble.go` the console will print '*Creating game with 0 players*'. Now wait just a minute, I never even typed a `0` this whole time, how did `%d` turn into that? Variables in Go have what are called [zero values](https://golang.org/ref/spec#The_zero_value), and the zero value of an integer is, predictably, `0`. When we say `var count int`, two things are actually going in our computer's little digital brain. First it is allocating an *address* for your variable, this acts like a library reference card detailing the place you'd find a book. In the computer's case, the address is a reference that points you to a value, not a book (if you are too young to remember what a library reference card is, go ask an old person). Because we did not set the value of our variable explicitly in our code, its address automatically got the zero value of an integer, 0. You can declare *and* set a variable with the fancy tool `:=` like this `count := 5`, which will set the variable `count` to have an address referencing the value of 5. Go attempts to figure out what type you meant, and numbers will default to `int`. Change your main function to use this [short variable declaration](https://golang.org/ref/spec#Short_variable_declarations):
 ```
 func main() {
   count := 5
@@ -60,4 +60,23 @@ fmt.Printf(format string, a ...interface{})
 ```
 Here `format` has the type string, which we passed `"Creating game with %d players"`. But why is the argument `a` a type with the elipsis interface thingy? What is going on there? Didn't we pass it `count`, which has an `int` type? Well, the last argument in any of Go's functions can have an elipsis prefixed to it to mean that it is *variadic*, and may be called with zero, one, or many arguments of that type. In our case, we're only passing one argument. The type we've been given `interface{}` is what is called an *empty interface*- we'll cover interfaces more later, but just know that an empty interface is like a catch-all for types that can accept absolutely any type you give it. Empty interfaces are useful, but your programs can suffer if you overuse them as the code gets less readable and more prone to *runtime errors*; these are errors that happen while the program is running. 
 
-The `Printf` code is performing what is called [string interpolation](https://en.wikipedia.org/wiki/String_interpolation), which basically means the the words (type string) are replacing the `%d` with the contents of the next argument's value, which in our case means the value of `count` is replacing `%d` in the string, and it is then getting printed to the console. You can see more formatting options in Go's [fmt package](https://golang.org/pkg/fmt/). You can see what passing multiple arguments to `Printf` looks like in[this playground](http://play.golang.org/p/iiZAiXi2hZ). 
+The `Printf` code is performing what is called [string interpolation](https://en.wikipedia.org/wiki/String_interpolation), which basically means the the words (type string) are replacing the `%d` with the contents of the next argument's value, which in our case means the value of `count` is replacing `%d` in the string, and it is then getting printed to the console. You can see more formatting options in Go's [fmt package](https://golang.org/pkg/fmt/). You can see what passing multiple arguments to `Printf` looks like in [this playground](http://play.golang.org/p/iiZAiXi2hZ). 
+
+# Making your own function
+
+While there is plenty of fun to be had only using the standard library's functions, it is much more enjoyable to write your own. Right now we've 'hard coded' the number of players into our program to always be 5 because we set `count` to that value. Instead, let us create a function which [returns](https://golang.org/ref/spec#Return_statements) the number of players in our game after prompting the user for a number. Fundamentally [functions](https://golang.org/ref/spec#Function_types) take inputs, and produce outputs. Writing them begins with the keyword `func`, a name, a set of optional arguments (the inputs to our function), and a set of optional return values (the outputs of our function) followed by the body of the function. For now, we'll write our function to take no arguments and return 5, so our program will funciton the same:
+```
+package main
+
+import "fmt"
+
+func main() {
+  count := PlayerCount()
+  fmt.Printf("Creating game with %d players\n", count)
+}
+
+func PlayerCount() int {
+  return 5
+}
+```
+The `fmt.Printf` function took arguments which were declared inside the parenthesis, however `PlayerCount` takes no arguments. It does, however, return an integer, so we need to declare that return type after the parenthesis.
