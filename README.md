@@ -45,5 +45,5 @@ func main() {
 }
 ```
 If you save and run this program with `go run scrabble.go` the console will print '*Creating game with 0 players*'. Now wait just a minute, I never even typed a `0` this whole time, how did `%d` turn into that? The trick is in [the Printf function](https://golang.org/pkg/fmt/#Printf), which you'll notice is utilized by first typing out what package it comes from (fmt), followed by a period and then the function name. Our `fmt.Printf` takes two [arguments](https://en.wikipedia.org/wiki/Argument_of_a_function)- arguments are the names describing the inputs for a function. The are always inside the parenthesis following the function name. First up in our arguments is a [string of characters](https://golang.org/ref/spec#String_types) which you see inside the quotes, followed by that `count` variable we declared earler. Note that the two arguments are comma separated, as are all arguments inside the function:
-`fmt.Printf(format string, a ...interface{})`
+```fmt.Printf(format string, a ...interface{})```
 Here `format` is given a type string, just as we have entered in our main function- but why the elipsis inteface thing? I thought 
