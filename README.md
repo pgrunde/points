@@ -31,6 +31,8 @@ func main() {
 
 After the package declaration we see the word `import`, a [keyword](https://golang.org/ref/spec#Keywords) which tells the app which imported packages will be used in this file. The `"fmt"` means we're importing the [fmt package](https://golang.org/pkg/fmt/) from the standard library because we need to print something to the command line. It should be noted that the main [function](http://www.cs.utah.edu/~germain/PPS/Topics/functions.html), like all Go functions, starts with the keyword `func`. We'll go into further detail regarding functions later on.
 
+# Variables and Functions
+
 Before we can ever keep track of points, we need to know how many players are actually in the game. Let us create a [variable](https://golang.org/ref/spec#Variables) and store an integer in it, then print out to the user that the game is starting with that many players.
 ```
 package main
@@ -42,4 +44,4 @@ func main() {
   fmt.Printf("Creating game with %d players\n", count)
 }
 ```
-If you save and run this program with `go run scrabble.go` the console will print 'Creating game with 0 players'. Now wait just a minute, I never even typed a `0` this whole time, how did `%d` turn into that? The trick is in [the `Printf` function](https://golang.org/pkg/fmt/#Printf), which you'll notice is utilized by first typing out what package it comes from (fmt), followed by a period and then the function name.
+If you save and run this program with `go run scrabble.go` the console will print '*Creating game with 0 players*'. Now wait just a minute, I never even typed a `0` this whole time, how did `%d` turn into that? The trick is in [the Printf function](https://golang.org/pkg/fmt/#Printf), which you'll notice is utilized by first typing out what package it comes from (fmt), followed by a period and then the function name. Our `fmt.Printf` takes two [arguments](https://en.wikipedia.org/wiki/Argument_of_a_function)- arguments are the names describing the inputs for a function. The are always inside the parenthesis following the function name. First up in our arguments is a [string of characters](https://golang.org/ref/spec#String_types) which you see inside the quotes, followed by that `count` variable we declared earler (note that the two arguments are comma separated, as are all arguments inside a function, `fmt.Printf(format string, a ...interface{})`).
