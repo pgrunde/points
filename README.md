@@ -31,7 +31,7 @@ func main() {
 
 After the package declaration we see the word `import`, a [keyword](https://golang.org/ref/spec#Keywords) which tells the app which imported packages will be used in this file. The `"fmt"` means we're importing the [fmt package](https://golang.org/pkg/fmt/) from the standard library because we need to print something to the command line. It should be noted that the main [function](http://www.cs.utah.edu/~germain/PPS/Topics/functions.html), like all Go functions, starts with the keyword `func`. We'll go into further detail regarding functions later on.
 
-# Variables and Functions
+# Variables
 
 Before we can ever keep track of points, we need to know how many players are actually in the game. Let us create a [variable](https://golang.org/ref/spec#Variables) and store an integer in it, then print out to the user that the game is starting with that many players. We'll declare it with `var` followed by the name we give it, followed by the [type](https://golang.org/ref/spec#Types). The type of a variable is very important in Go as it is a [strongly typed](https://en.wikipedia.org/wiki/Strong_and_weak_typing) language, which means Go really needs to know what the heck type of thing you're creating or using. Maybe you can store memories as smells, sounds, tastes, and emotion, but a computer only remembers things as ones and zeros. Ones and zeros are still powerful though, because we can put them in patterns that a computer can recognize as more complex stuff. A computer doesn't see your Google searches as words, but ones and zeros assembled to represent those words- Go, by the by, uses what is called [UTF-8 encoding](https://en.wikipedia.org/wiki/UTF-8) to represent its words. Since we need to represent a number we can use a type of integer, `int`, one of Go's [numeric types](https://golang.org/ref/spec#Numeric_types):
 ```
@@ -44,6 +44,20 @@ func main() {
   fmt.Printf("Creating game with %d players\n", count)
 }
 ```
-If you save and run this program with `go run scrabble.go` the console will print '*Creating game with 0 players*'. Now wait just a minute, I never even typed a `0` this whole time, how did `%d` turn into that? The trick is in [the Printf function](https://golang.org/pkg/fmt/#Printf), which you'll notice is utilized by first typing out what package it comes from (fmt), followed by a period and then the function name. Our `fmt.Printf` takes two [arguments](https://en.wikipedia.org/wiki/Argument_of_a_function)- arguments are the names describing the inputs for a function. The are always inside the parenthesis following the function name. First up in our arguments is a [string of characters](https://golang.org/ref/spec#String_types) which you see inside the quotes, followed by that `count` variable we declared earler. Note that the two arguments are comma separated, as are all arguments inside the function:
-```fmt.Printf(format string, a ...interface{})```
-Here `format` is given a type string, just as we have entered in our main function- but why the elipsis inteface thing? I thought 
+If you save and run this program with `go run scrabble.go` the console will print '*Creating game with 0 players*'. Now wait just a minute, I never even typed a `0` this whole time, how did `%d` turn into that? Variables in Go have what are called [zero values](https://golang.org/ref/spec#The_zero_value), and the zero value of an integer is, predictably, `0`. When we say `var count int`, two things are actually going in our computer's little digital brain. First it is allocating an *address* for your variable, this acts like a library reference card detailing the place you'd find a book. In the computer's case, the address is a reference that points you to a value, not a book (if you are too young to remember what a library reference card is, go ask an old person). Because we did not set the value of our variable explicitly in our code, its address automatically got the zero value of an integer, 0. You can declare *and* set a variable with a fancy tool (called an operator) `:=` like this `count := 5`, which will set the variable `count` to have an address referencing the value of 5. Go attempts to figure out what type you meant, and numbers will default to `int`. Change your main function to use this [short variable declaration](https://golang.org/ref/spec#Short_variable_declarations):
+```
+func main() {
+  count := 5
+  fmt.Printf("Creating game with %d players\n", count)
+}
+```
+
+# Functions
+
+You might have already guessed what the [the Printf function](https://golang.org/pkg/fmt/#Printf) is doing in our program. It is replacing the `%d` with the value of our `count` variable and printing it to the console. This function comes from the a package in the standard library, so we call it by first typing out what package it comes from (fmt), followed by a period and then the function name. Our `fmt.Printf` takes two [arguments](https://en.wikipedia.org/wiki/Argument_of_a_function)- arguments are the names describing the inputs for a function. The are always inside the parenthesis following the function name. First up in our arguments is a [string of characters](https://golang.org/ref/spec#String_types) which you see inside the quotes, followed by that `count` variable we declared earler. Note that the two arguments are comma separated, as are all arguments inside the function. If you [look at the function](https://golang.org/ref/spec#Short_variable_declarations) in the standard library it looks like this: 
+```
+fmt.Printf(format string, a ...interface{})
+```
+Here `format` is given a type string, just as we have entered in our main function- but why is the argument `a` a type with the elipsis interface thingy? What is going on there? Well, the last argument in any of Go's functions can have an elipsis prefixed to it to mean that it is *variadic*, and may be called with zero, one, or many arguments of that type. The type we've been given is what is called an *empty interface*- we'll cover interfaces more later, but just know that an empty interface is like a catch-all for types that can accept absolutely any type you give it. Empty interfaces are useful, but your programs can suffer if you overuse them as the code gets less readable and more prone to *runtime errors*; these are errors that happen while the program is running. 
+
+To illustrate how we could use 
