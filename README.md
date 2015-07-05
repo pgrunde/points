@@ -66,7 +66,7 @@ The `Printf` code is performing what is called [string interpolation](https://en
 
 While there is plenty of fun to be had only using the standard library's functions, it is much more enjoyable to write your own. Right now we've 'hard coded' the number of players into our program to always be 5 because we set `count` to that value. Instead, let us create a function which [returns](https://golang.org/ref/spec#Return_statements) the number of players in our game after prompting the user for a number. 
 
-Fundamentally [functions](https://golang.org/ref/spec#Function_types) take inputs, and produce outputs. Writing them begins with the keyword `func`, a name, a set of optional arguments (the inputs to our function), and a set of optional return values (the outputs of our function) followed by the body of the function. For now, we'll write our function to take no arguments and return 5, so our program will funciton the same:
+Fundamentally [functions](https://golang.org/ref/spec#Function_types) take inputs, and produce outputs. Writing them begins with the keyword `func`, a name, a set of optional arguments (the inputs to our function), and a set of optional return values (the outputs of our function) followed by the body of the function. For now, we'll write our function to take no arguments and return 5, so our program will function the same:
 ```
 package main
 
@@ -81,4 +81,21 @@ func PlayerCount() int {
   return 5
 }
 ```
-The `fmt.Printf` function took arguments which were declared inside the parenthesis, however `PlayerCount` takes no arguments. It does, however, return an integer, so we need to declare that return type after the parenthesis. The next part of our function is wrapped in curly bracket delimiters and is called the function [block](https://golang.org/ref/spec#Blocks). All the lines of code inside `{` and `}` run whenever the function is used. When the function code is running, the `return` keyword tells the function to exit and return whatever value comes after `return`, which in our case is the integer 5. Go can perform math with integers, so `return 2 + 3`, `return 7 - 1` would all return the same thing as `return 5`.
+The `fmt.Printf` function took arguments which were declared inside the parenthesis, however `PlayerCount` takes no arguments. It does, however, return an integer, so we need to declare that return type after the parenthesis. The next part of our function is wrapped in curly bracket delimiters and is called the function [block](https://golang.org/ref/spec#Blocks). All the lines of code inside `{` and `}` run whenever the function is used. When the function code is running, the `return` keyword tells the function to exit and return whatever value comes after `return`, which in our case is the integer 5 (go ahead and try to return `"five"` and try to run to program- it won't even compile when the type you return doesn't match the return type you specified). By the way, Go can perform math with integers, so `return 2 + 3` and `return 7 - 1` would all return the same thing as `return 5`.
+
+# Give me the Methods to implement my Interface
+
+In order to get input from the user, we're probably going to need to *read* something they give us, hope it is a number, and then create our game with that many players. Thankfully the standard library has a useful package called [bufio](http://golang.org/pkg/bufio/), which stands for buffered input/output. 'Buffer' just means that your computer will put stuff into memory while it gets used. Since we're going to read input from the user, we're going to use the [bufio.NewReader](http://golang.org/pkg/bufio/#NewReader) function to create a reader for our user's input. Check out the input for that function:
+```
+func NewReader(rd io.Reader) *Reader
+``` 
+The input for this function `rd` must be of a type `io.Reader`. If you click on that input type in the library, it will take you to a description of [type Reader](http://golang.org/pkg/io/#Reader). This is an unfamiliar type called an [interface](https://golang.org/doc/effective_go.html#interfaces_and_types), and you can see it is written `type Reader interface` followed by another *block* of code (we know it is a block because it is wrapped in curly brackets). The block, however, is simply a list of methods. In this case, the list contains only a single method, `Read(p []byte) (n int, err error)`. Don't worry if you don't recognize the types here just yet, it is more important to know that it is a method.  *Oh shoot dang what is a method?* you might be asking, *it looks a whole lot like a function, what gives?* A [method](https://golang.org/doc/effective_go.html#methods) is a kind of function, except only *types* can perform, or *call*, that method *if they've been already given that method*. Giving a type a method looks an awful lot like how you write a function, only inbetween the keyword `func` and the function name, you'll see parenthesis which declare the type which receives this method. For example, in the [os package](https://golang.org/pkg/os/) there is a a type called [File](https://golang.org/pkg/os/#File), and this type has a method we're about to find really useful- [Read](https://golang.org/pkg/os/#File.Read). It looks like this:
+```
+func (f *File) Read(b []byte) (n int, err error)
+```
+You see `(f *File)` after the keyword `func` and before `Read`- this tells you that, in this case, the type `*File` has the method `Read` (ignore the asterisk for now and just think `File`, I'll explain why that doo-hickey is there in a bit). More importantly, our `type Reader interface` has just one method, and its name, input type, and output types are *identical* to the method that `*File` has- you don't even need to know what `[]byte] or `error` are to see that they're the same. Using the Reader interface type as the input to `io.NewReader` lets us know that any type can be used as an input so long as it *implements the Reader interface*, which is to say it has the method `Read` with the same input and output types. Let us rewrite our `PlayerCount()` function to create a new reader, and we'll pass it a special `os.File` type called [Stdin](https://golang.org/pkg/os/#pkg-variables), which is a File that represents input coming from the user's console (Terminal).
+```
+func PlayerCount() int {
+  r := bufio.NewReader(os.Stdin)
+}
+```
