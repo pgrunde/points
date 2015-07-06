@@ -15,7 +15,7 @@ Make a folder in your [GOPATH](https://golang.org/doc/code.html#GOPATH)- if you'
 
 # The main function
 
-Every application which compiles and runs will have a `main()` function whose job is to start off your program. Libraries, called packages in Go, do not have a main function, they just give you cool functions and tools to play with in your own app- we're going to only use packages that come from Go's [powerful standard library](https://golang.org/pkg/#stdlib), which is like a huge collection of tools that comes with Go itself.
+Every application which compiles and runs will have a `main()` function (a thing that runs code), whose job is to start off your program. Go code that does not compile and run, that is they have no `main()` function, are libraries, called packages in Go. They give you cool tools someone else wrote which you can play with in your own app- we're going to only use packages that come from Go's [powerful standard library](https://golang.org/pkg/#stdlib), which is a huge collection of packages that comes with Go itself. They allow you to build and hack with all kinds of things like [images](https://golang.org/pkg/image/), [cryptopgraphy](https://golang.org/pkg/crypto/), [encoding](https://golang.org/pkg/encoding/), or even [the Internet](https://golang.org/pkg/net/).
 
 Each Go file begins with a package declaration that says to your application "*Hey App, all the contents of this here file belong to this package.*" The beginning of our program, the file containing the `main()` function, lives in `package main`. If you [tested your Go installation](https://golang.org/doc/install#testing), you should have seen something like this:
 ```
@@ -95,9 +95,23 @@ The input for this function `rd` must be of a type `io.Reader`. If you click on 
 ```
 func (f *File) Read(b []byte) (n int, err error)
 ```
-You see `(f *File)` after the keyword `func` and before `Read`- this tells you that, in this case, the type `*File` has the method `Read` (ignore the asterisk for now and just think `File`, I'll explain why that doo-hickey is here in a bit). More importantly, our `type Reader interface` has just one method, and its name, input type, and output types are *identical* to the method that `*File` has- you don't even need to know what the types `[]byte` or `error` are to see that they're the same. Using the Reader interface type as the input to `io.NewReader` lets us know that any type can be used as an input so long as it *implements the Reader interface*, which is to say it has the method `Read` with the same input and output types. Let us rewrite our `PlayerCount()` function to create a new reader, and we'll pass it a special `os.File` type called [Stdin](https://golang.org/pkg/os/#pkg-variables), which is a File that represents input coming from the user's console (Terminal).
+You see `(f *File)` after the keyword `func` and before `Read`- this tells you that, in this case, the type `*File` has the method `Read` (ignore the asterisk for now and just think `File`, I'll explain why that doo-hickey is here in a bit). More importantly, our `type Reader interface` has just one method, and its name, input type, and output types are *identical* to the method that `*File` has- you don't even need to know what the types `[]byte` or `error` are to see that they're the same. Using the Reader interface type as the input to `io.NewReader` lets us know that any type can be used as an input so long as it *implements the Reader interface*, which is to say it has the method `Read` with the same input and output types. Let us rewrite our `PlayerCount()` function to create a new reader, and we'll pass it a special `os.File` type called [Stdin](https://golang.org/pkg/os/#pkg-variables), which is a File that represents input coming from the user's console. Change your code to look like this:
 ```
+package main
+
+import (
+  "fmt"
+  "bufio"
+  "os"
+)
+
+func main() {
+  count := PlayerCount()
+  fmt.Printf("Creating game with %d players\n", count)
+}
+
 func PlayerCount() int {
   r := bufio.NewReader(os.Stdin)
 }
 ```
+# Oopsies
