@@ -95,7 +95,11 @@ The input for this function `rd` must be of a type `io.Reader`. If you click on 
 ```
 func (f *File) Read(b []byte) (n int, err error)
 ```
-You see `(f *File)` after the keyword `func` and before `Read`- this tells you that, in this case, the type `*File` has the method `Read` (ignore the asterisk for now and just think `File`, I'll explain why that doo-hickey is here in a bit). More importantly, our `type Reader interface` has just one method, and its name, input type, and output types are *identical* to the method that `*File` has- you don't even need to know what the types `[]byte` or `error` are to see that they're the same. Using the Reader interface type as the input to `io.NewReader` lets us know that any type can be used as an input so long as it *implements the Reader interface*, which is to say it has the method `Read` with the same input and output types. Let us rewrite our `PlayerCount()` function to create a new reader, and we'll pass it a special `os.File` type called [Stdin](https://golang.org/pkg/os/#pkg-variables), which is a File that represents input coming from the user's console. Change your code to look like this:
+You see `(f *File)` after the keyword `func` and before `Read`- this tells you that, in this case, the type `*File` has the method `Read` (ignore the asterisk for now and just think `File`, I'll explain why that doo-hickey is here in a bit). More importantly, our `type Reader interface` has just one method, and its name, input type, and output types are *identical* to the method that `*File` has- you don't even need to know what the types `[]byte` or `error` are to see that they're the same. Using the Reader interface type as the input to `io.NewReader` lets us know that any type can be used as an input so long as it *implements the Reader interface*, which is to say it has the method `Read` with the same input and output types.
+
+Remeber the [empty inteface](http://blog.golang.org/laws-of-reflection)? It was written `interface{}`, and could accept any type in its place. It is a little odd to imagine, but it works because every type implements a set of methods if that set has nothing in it. All values and their types have zero or more methods. If this explanation still doesn't sit well, just remember than `interface{}` means 'any type', and you'll be fine.
+
+Let us rewrite our `PlayerCount()` function to create a new reader, and we'll pass it a special `os.File` argument called [Stdin](https://golang.org/pkg/os/#pkg-variables), which is a File that represents input coming from the user's console. Change your code to look like this:
 ```
 package main
 
@@ -112,6 +116,35 @@ func main() {
 
 func PlayerCount() int {
   r := bufio.NewReader(os.Stdin)
+  return r
 }
 ```
-# Oopsies
+# Oopsies, Errors, and Actually reading a string
+
+Save and run this [program](http://play.golang.org/p/D2nLTx9h_C). You'll see an error:
+```
+# command-line-arguments
+/tmp/sandbox298959168/main.go:16: cannot use r (type *bufio.Reader) as type int in return argument
+```
+This is a compilation error- the program can't even. You'll get these if Go fails to take the words you've written and translate them into ones and zeros it can understand. In this case, it can't understand why `PlayerCount` tried to return a `*bufio.Reader` when it clearly says in its definition that it will be returning an `int`. There are a few more steps before we can both read from our Reader and return an integer. 
+
+If you look at the [bufio package index](http://golang.org/pkg/bufio/#pkg-index) you'll see that type `Reader` has several methods available to it, and you should check them out, however I'm most interested in the [ReadString](http://golang.org/pkg/bufio/#Reader.ReadString) method. It takes a single `byte` (eight ones and zeros) as an argument, and luckily Go can read a single character in just one byte thanks to its UTF-8 encoding. In our case we'll use the byte that represents our 'enter' or 'return' key, that way our user can type in whatever they want and our Reader will stop reading once they press 'enter'. Change `PlayerCount()` to look like this, then run it...
+```
+func PlayerCount() int {
+  r := bufio.NewReader(os.Stdin)
+  line, err := r.ReadString('\n')
+  return 5
+}
+```
+... To get two new compilation errors! Hooray! Welcoe to programming- its building whatever you can dream, one error at a time. Go is nice enough to tell you that there are unused values, in this case `line` and `err`. In order to test the user input out, we're going to ignore the error by replacing it with an underscore which is a neat trick that tells Go that you don't want it to store one of the return values from the function. Afterwards we'll print out whatever is typed to make sure our reader is working. We'll still return 5 for now, just to make `PlayerCount` work. After you change `PlayerCount` to look like it does below, run the program and type whatever you want, followed by 'enter'. You should see it printed back at you, followed by our 'Creating game with 5 players' print.
+```
+func PlayerCount() int {
+  r := bufio.NewReader(os.Stdin)
+  line, _ := r.ReadString('\n')
+  fmt.Println(line)
+  return 5
+}
+```
+There are two steps to take before we can make our function happy, that is to say, compile and return an actual integer. We'll deal with the error first (as we'll be seeing another one shortly), then we'll convert the string into an integer we can return.
+
+To proceed you'll need to understand the [error](http://blog.golang.org/error-handling-and-go) type. Many standard library functions return a value and potentially an error- this occurs usually when the function was given some incomprehensible input that it doesn't know how to work with. Typically you would want your program to handle an error gracefully, however in our case we're going totally freak out and [panic](http://blog.golang.org/defer-panic-and-recover), just because we can.
