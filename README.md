@@ -10,7 +10,6 @@ A working [installation of Go](https://golang.org/doc/install), and some [comman
 
 # Setup
 
-
 Make a folder in your [GOPATH](https://golang.org/doc/code.html#GOPATH)- if you're using Github, I recommend `github.com/$username$/scrabble`, just like they recommend. Next create our main file inside with the command `touch scrabble.go`. Open that up in your favorite editor and let's begin!
 
 # The main function
@@ -80,7 +79,7 @@ The `Printf` code is performing what is called [string interpolation](https://en
 
 # Making your own function
 
-While there is plenty of fun to be had only using the standard library's functions, it is much more enjoyable to write your own. Right now we've 'hard coded' the number of players into our program to always be 5 because we set `count` to that value. Instead, let us create a function which [returns](https://golang.org/ref/spec#Return_statements) the number of players in our game after prompting the user for a number. 
+While there is plenty of fun to be had only using the standard library's functions, it is much more enjoyable to write your own. Right now we've 'hard coded' the number of players into our program to always be 5 because we set `count` to that value. Instead, let us create a function which [returns](https://golang.org/ref/spec#Return_statements) the number of players in our game.
 
  For now, we'll write our function to take no arguments and return 5, so our program will operate the same way:
 ```
@@ -97,13 +96,13 @@ func PlayerCount() int {
   return 5
 }
 ```
-The `fmt.Printf` function took arguments which were declared inside the parenthesis, however `PlayerCount` takes no arguments. It does, however, return an integer, so we need to declare that return type after the parenthesis. The next part of our function is wrapped in curly bracket delimiters and is called the function [block](https://golang.org/ref/spec#Blocks). All the lines of code inside `{` and `}` run whenever the function is used. The first line in the `main()` function shows us creating the `count` variable by setting it to whatever the heck gets returned to us from `PlayerCount()` When the function code is running, the `return` keyword tells the function to exit and return whatever value comes after `return`, which in our case is the integer 5 (go ahead and try to return `"five"` and try to run to program- it won't even compile when the type you return doesn't match the return type you specified). Don't forget Go can perform math with integers, so `return 2 + 3` and `return 7 - 1` would all return the same thing as `return 5`.
+The `fmt.Printf` function took arguments which were declared inside the parenthesis, however `PlayerCount` takes no arguments (nothing inbetween the parenthesis). It does, however, return an integer, so we need to declare that return type after the parenthesis `func PlayerCount() int`. The next part of our function is wrapped in curly bracket delimiters and is called the function [block](https://golang.org/ref/spec#Blocks). All the lines of code inside `{` and `}` run whenever the function is used. The code is run just like instructions, one line after the other. When the function code is running, the `return` keyword tells the function to exit and return whatever value comes after `return`, which in our case is the integer 5 (go ahead and wrtie `return "five"` and try to run the program- it won't even compile when the type you return doesn't match the return type you specified). Don't forget Go can perform math with integers, so `return 2 + 3` and `return 7 - 1` would all return the same thing as `return 5`.
 
 [Here](http://play.golang.org/p/8ummDvoLm_) is an example where PlayerCount takes an argument, `(i int)`. Inside the function block you can see that the input is represented by the `i`.
 
 # Make your own types
 
-The Go language comes with many [built in](http://golang.org/pkg/builtin/) types, but you are not held back from making your very own. The keyword to begin creating your own type is, well, `type`. Types you create must have a name and have an underlying type. What does 'underylying type' mean? It means I can write `type Count int` and have a brand new type that has all the properties of its underlying type integer. Why would I do this though? Why can't I use `int` for everything? You could. Nothing would stop you. However, using a named type like this can prevent you from accidentally using a the wrong variable for the wrong input, causing your code to fail. If we re-wrote our PlayerCount function to use a customer Count type, it could look like this:
+The Go language comes with many [built in](http://golang.org/pkg/builtin/) types, but you are not held back from making your very own. The keyword to begin creating your own type is, well, `type`. Types you create must have a name and have an underlying type. What does 'underylying type' mean? It means I can write `type Count int` and have a brand new type that has all the properties of its underlying type integer. Why would I do this though? Why can't I use `int` for everything? You could. Nothing would stop you. However, using a named type like this can prevent you from accidentally using a the wrong variable for the wrong input, causing your code to fail. If we re-wrote our PlayerCount function to use a custom Count type, it could look like this:
 ```
 package main
 
@@ -116,8 +115,8 @@ func main() {
   fmt.Printf("Creating game with %d players\n", count)
 }
 
-// PlayerCount now uses multiple lines! The return type 
-// changed to Count and now there are multiple lines
+// PlayerCount now uses multiple lines! The return type changed to
+// Count and we are setting the value after declaring the type
 func PlayerCount() Count {
   var c Count
   c = 5
@@ -127,27 +126,102 @@ func PlayerCount() Count {
 
 # A structure of many types
 
-Players need to be represented by a name and their score. We're going to need a way to organize this informtion- thankfully Go provides a way to assemble different types into useful structures, called a [struct](https://golang.org/ref/spec#Struct_types). We'll be able to make a type composed of several other types with the `struct` keyword. In order to declare a structure named Person, we would write `type Person struct{}`. In order to be useful, however, a structure should have *fields*. A field has a name and a type- if we were to declare our Person struct to have a field for their name (type string) you would write it like this:
+Players need to be represented by a name and their score. We're going to need a way to organize this informtion- thankfully Go provides a way to assemble different types into useful structures, called a [struct type](https://golang.org/ref/spec#Struct_types). We'll be able to make a type composed of several other types with the `struct` keyword. In order to declare a structure named Player, we would write `type Player struct{}`. In order to be useful, however, a structure should have *fields*. A field has a name and a type- if we were to declare our Player struct to have a field for their name (type string) you would write it like this:
 ```
-type Person struct {
+type Player struct {
   Name string
 }
 ``` 
+How about adding Score, too? We'll use an integer.
+```
+type Player struct {
+  Name string
+  Score int
+}
+``` 
+Now that we have the type, we have the ability to create new structures that let us better organize our information. From now own, the `Player` types we have will fully keep track of what we need for keeping score of each player. But how do you create one? How do you set the value of its fields? How do you use those fields? [Check it out an example](http://play.golang.org/p/oXxzySfjXz):
+```
+package main
+
+import "fmt"
+
+// First we add the Player struct with field types 'Name string' and 'Score int'
+type Player struct {
+  Name string
+  Score int
+}
+
+// Example program: declare a struct type, print a field, change a field on it, then prints its fields
+func main() {
+  // Create PlayerOne of type Player, set the field Name to "Kaylee" and Score to 1.
+  playerOne := Player{
+    Name: "Kaylee",
+    Score: 1,
+  }
+  
+  // Print the Name field on PlayerOne
+  // Note the dot notation, or use of the period
+  fmt.Println(playerOne.Name) 
+  
+  // Set the Score on playerOne to 10
+  playerOne.Score = 10
+  
+  // Print the entire struct
+  fmt.Println(playerOne)
+  
+  // Print the struct using Printf and the "%+v" fmt Print verb
+  fmt.Printf("%+v", playerOne)
+}
+```
+By typing `playerOne := Player` we set its type to Player. Inside the block we write the field names colon-separated by their value. The fields can be accessed by writing the name of the Player, a period, then the field name like `playerOne.Name` or they can be set with the '=' keyword `playerOne.Score = 10`. 
+
 # Give me the Methods to implement my Interface
+
+Back to our code! By now it should look like before, but we have a new Player type that so far is not being used.
+```
+package main
+
+import "fmt"
+
+type Count int
+
+type Player struct {
+  Name string
+  Score int
+}
+
+func main() {
+  count := PlayerCount()
+  fmt.Printf("Creating game with %d players\n", count)
+}
+
+// PlayerCount now uses multiple lines! The return type changed to
+// Count and we are setting the value after declaring the type
+func PlayerCount() Count {
+  var c Count
+  c = 5
+  return c
+}
+```
+This still isn't actually doing anything interactive, and that's a problem. We need to be asking our user how many players they have playing the game before we can go creating new Players- I can't just assume it will be five players every time.
 
 In order to get input from the user, we're probably going to need to *read* something they give us, hope it is a number, and then create our game with that many players. Thankfully the standard library has a useful package called [bufio](http://golang.org/pkg/bufio/), which stands for buffered input/output. 'Buffer' just means that your computer will put bits into memory while they get used. Since we're going to read input from the user, we're going to use the [bufio.NewReader](http://golang.org/pkg/bufio/#NewReader) function to create a reader for our user's input. Check out the input for that function:
 ```
 func NewReader(rd io.Reader) *Reader
-``` 
-The input for this function `rd` must be of a type `io.Reader`. If you click on that input type in the library, it will take you to a description of [type Reader](http://golang.org/pkg/io/#Reader). This is an unfamiliar type called an [interface](https://golang.org/doc/effective_go.html#interfaces_and_types), and you can see it is written `type Reader interface` followed by another *block* of code (we know it is a block because it is wrapped in curly brackets). The block, however, is filled with a special type of function called a method. is simply a list of methods. In this case, the list contains only a single method, `Read(p []byte) (n int, err error)`. Don't worry if you don't recognize the types here just yet, it is more important to know that it is a method.  *Oh shoot dang what is a method?* you might be asking, *it looks a whole lot like a function, what gives?* A [method](https://golang.org/doc/effective_go.html#methods) is a kind of function, except only *types* can perform, or *call*, that method *if they've been already given that method*. Giving a type a method looks an awful lot like how you write a function, only inbetween the keyword `func` and the function name, you'll see parenthesis which declare the type which receives this method. For example, in the [os package](https://golang.org/pkg/os/) there is a a type called [File](https://golang.org/pkg/os/#File), and this type has a method we're about to find really useful- [Read](https://golang.org/pkg/os/#File.Read). It looks like this:
 ```
-func (f *File) Read(b []byte) (n int, err error)
+The input for this function `rd` must be of a type `Reader` from the 'io' package, because it is written `io.Reader`. If you click on that input type in the library, it will take you to a description of [type Reader](http://golang.org/pkg/io/#Reader). This is an unfamiliar type called an [interface](https://golang.org/doc/effective_go.html#interfaces_and_types), and you can see it is written `type Reader interface` followed by another *block* of code (we know it is a block because it is wrapped in curly brackets). The block, however, is filled with a special type of function called a method. In this case, the list contains only a single method, `Read(p []byte) (n int, err error)`. Don't worry if you don't recognize the types here just yet, it is more important to know that it is a method.  *Oh shoot dang what is a method?* you might be asking, *it looks a whole lot like a function, what gives?* A [method](https://golang.org/doc/effective_go.html#methods) is a kind of function, except only *types* can perform, or *call*, that method *if they've already been given that method*. Giving a type a method looks an awful lot like how you write a function, only inbetween the keyword `func` and the function name, you'll see parenthesis which declare the type receiving this method. For example, in the [os package](https://golang.org/pkg/os/) there is a a type called [File](https://golang.org/pkg/os/#File), and this type has a method we're about to find really useful- [Read](https://golang.org/pkg/os/#File.Read). It looks like this:
+```
+func (f *File) Read(b []byte) (n int, err error) 
 ```
 You see `(f *File)` after the keyword `func` and before `Read`- this tells you that, in this case, the type `*File` has the method `Read` (ignore the asterisk for now and just think `File`, I'll explain why that doo-hickey is here in a bit). More importantly, our `type Reader interface` has just one method, and its name, input type, and output types are *identical* to the method that `*File` has- you don't even need to know what the types `[]byte` or `error` are to see that they're the same. Using the Reader interface type as the input to `io.NewReader` lets us know that any type can be used as an input so long as it *implements the Reader interface*, which is to say it has the method `Read` with the same input and output types.
 
-Remeber the [empty inteface](http://blog.golang.org/laws-of-reflection)? It was written `interface{}`, and could accept any type in its place. It is a little odd to imagine, but it works because every type implements a set of methods if that set has nothing in it. All values and their types have zero or more methods. If this explanation still doesn't sit well, just remember than `interface{}` means 'any type', and you'll be fine.
+Remeber the [empty inteface](http://blog.golang.org/laws-of-reflection)? It was written `interface{}`, and could accept any type in its place. It is a little odd to imagine, but it works because every type in all of Go existence implements a set of methods if that set has nothing in it. All values and their types have *zero* or more methods. If this explanation still doesn't sit well, just remember than `interface{}` means 'any type', and you'll be fine.
 
-Let us rewrite our `PlayerCount()` function to create a new reader, and we'll pass it a special `os.File` argument called [Stdin](https://golang.org/pkg/os/#pkg-variables), which is a File that represents input coming from the user's console. Change your code to look like this:
+Try writing a method for our Player struct that takes no inputs, gives no outputs, but it prints the Player's name colon-separated from the player's score. [Here is a working example](http://play.golang.org/p/VrNTM3pQ_Q) if you get stuck.
+
+Now that you see how I can write a method, let us rewrite our `PlayerCount()` function to create a new reader, and we'll pass it a special `os.File` argument called [Stdin](https://golang.org/pkg/os/#pkg-variables). Remember we can use `os.File` as an argument because it is a Reader. It has the method Read with the same inputs and outputs, so it implements the interface we use for a `bufio.NewReader`.  We will create a File that represents input coming from the user's console. Thankfully that is exactly what `os.Stdin` does for us.
+
+Change your code to look like this:
 ```
 package main
 
@@ -157,12 +231,19 @@ import (
   "os"
 )
 
+type Count int
+
+type Player struct {
+  Name string
+  Score int
+}
+
 func main() {
   count := PlayerCount()
   fmt.Printf("Creating game with %d players\n", count)
 }
 
-func PlayerCount() int {
+func PlayerCount() Count {
   r := bufio.NewReader(os.Stdin)
   return r
 }
@@ -174,7 +255,7 @@ Save and run this [program](http://play.golang.org/p/D2nLTx9h_C). You'll see an 
 # command-line-arguments
 /tmp/sandbox298959168/main.go:16: cannot use r (type *bufio.Reader) as type int in return argument
 ```
-This is a compilation error- the program can't even. You'll get these if Go fails to take the words you've written and translate them into ones and zeros it can understand. In this case, it can't understand why `PlayerCount` tried to return a `*bufio.Reader` when it clearly says in its definition that it will be returning an `int`. There are a few more steps before we can both read from our Reader and return an integer. 
+This is a compilation error- the program can't even. You'll get these if Go fails to take the words you've written and translate them into ones and zeros it can understand. In this case, it can't understand why `PlayerCount` tried to return a `*bufio.Reader` when it clearly says in its definition that it will be returning a `Count`. There are a few more steps before we can both read from our Reader and return an Count.
 
 If you look at the [bufio package index](http://golang.org/pkg/bufio/#pkg-index) you'll see that type `Reader` has several methods available to it, and you should check them out. Our variable `r` is a Reader, remember.  Of the methods available to our reader, I'm most interested in the [ReadString](http://golang.org/pkg/bufio/#Reader.ReadString) method. It takes a single `byte` (eight ones and zeros) as an argument, and luckily Go can read a single character in just one byte thanks to its UTF-8 encoding. In our case we'll use the byte that represents our 'enter' or 'return' key, that way our user can type in whatever they want and our Reader will stop reading once they press 'enter'. Characters wrapped in single quotes represent the bytes of a single character, and they are of type `byte`. The character that represents a return in a line of text is written `'\n'`. Methods are called from a variable in the same way a function is called from a package- with a period separating the two; `r.ReadString('\n')`. Go ahead and change `PlayerCount()` to look like this, then run it...
 ```
@@ -184,7 +265,7 @@ func PlayerCount() int {
   return 5
 }
 ```
-... To get two new compilation errors! Hooray! Welcoe to programming- its building whatever you can dream, one error at a time. Go is nice enough to tell you that there are unused values, in this case `line` and `err`. In order to test the user input out, we're going to ignore the error by replacing it with an underscore which is a neat trick that tells Go that you don't want it to store one of the return values from the function. Afterwards we'll print out whatever is typed to make sure our reader is working. We'll still return 5 for now, just to make `PlayerCount` work. After you change `PlayerCount` to look like it does below, run the program and type whatever you want, followed by 'enter'. You should see it printed back at you, followed by our 'Creating game with 5 players' print.
+... To get two new compilation errors! Hooray! Welcoe to programming- its building whatever you can dream, one error at a time. Go is nice enough to tell you that there are unused values, in this case `line` and `err`. In order to test the user input out, we're going to ignore the error by replacing it with an underscore which is a neat trick that tells Go that you don't want it to store one of the return values from the function. Please note that ignore errors like this is alomst always a bad idea- I'm doing it here just to test it out. We'll print out whatever is typed to make sure our reader is working. We'll still return 5 for now, just to make `PlayerCount` work. After you change `PlayerCount` to look like it does below, run the program and type whatever you want, followed by 'enter'. You should see it printed back at you, followed by our 'Creating game with 5 players' print.
 ```
 func PlayerCount() int {
   r := bufio.NewReader(os.Stdin)
@@ -193,11 +274,11 @@ func PlayerCount() int {
   return 5
 }
 ```
-There are two steps to take before we can make our function happy, that is to say, compile and return an actual integer. We'll deal with the error first (as we'll be seeing another one shortly), then we'll convert the string into an integer we can return.
+There are two steps to take before we can make our function happy, that is to say, compile and return an actual integer a user provided. We'll deal with the error first, then we'll convert the string `line` into an integer we can return.
 
-To proceed you'll need to understand the [error](http://blog.golang.org/error-handling-and-go) type. Many standard library functions return a value and potentially an error- this occurs usually when the function was given some incomprehensible input that it doesn't know how to work with. Typically you would want your program to handle an error gracefully, however in our case we're going totally freak out and [panic](http://blog.golang.org/defer-panic-and-recover), just because we can.
+To proceed you'll need to understand the [error](http://blog.golang.org/error-handling-and-go) type. Many standard library functions return a value and potentially an error- this occurs usually when the function was given some incomprehensible input that it doesn't know how to work with. Typically you would want your program to handle an error appropriately, however in our case we're going totally freak out and [panic](http://blog.golang.org/defer-panic-and-recover).
 
-# If this happens TOTALLY PANIC
+# IF this happens... Panic!
 
 One of the best parts about programming is that computers can make 'decisions', sort of. Well at least they can look at ones and zeros, tell you how they're different, and perform different actions depending on how they're different. In Go, we start asking the question with the keyword `if`, followed by an [expression](https://golang.org/ref/spec#Expressions), and then a block of code. Expressions are little segments of code that, after they've run, will yield either `true` or `false`- these are Go values that have the type [bool](https://golang.org/ref/spec#Boolean_types). By the way, a bool's zero value (i.e. a variable written `var b bool`) will be `false`. The [following example](http://play.golang.org/p/ixcpoXMccU) shows how `if` blocks of code will only run when their expressions evaluate to `true`.
 ```
