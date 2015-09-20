@@ -103,7 +103,7 @@ The `fmt.Printf` function took arguments which were declared inside the parenthe
 
 # Make your own types
 
-The Go language comes with many [built in](TODO) types, but you are not held back from making your very own. The keyword to begin creating your own type is, well, `type`. Types you create must have a name and have an underlying type. What does 'underylying type' mean? It means I can write `type Count int` and have a brand new type that has all the properties of its underlying type integer. Why would I do this though? Why can't I use `int` for everything? You could. Nothing would stop you. However, using a named type like this can prevent you from accidentally using a the wrong variable for the wrong input, causing your code to fail. If we re-wrote our PlayerCount function to use a customer Count type, it could look like this:
+The Go language comes with many [built in](http://golang.org/pkg/builtin/) types, but you are not held back from making your very own. The keyword to begin creating your own type is, well, `type`. Types you create must have a name and have an underlying type. What does 'underylying type' mean? It means I can write `type Count int` and have a brand new type that has all the properties of its underlying type integer. Why would I do this though? Why can't I use `int` for everything? You could. Nothing would stop you. However, using a named type like this can prevent you from accidentally using a the wrong variable for the wrong input, causing your code to fail. If we re-wrote our PlayerCount function to use a customer Count type, it could look like this:
 ```
 package main
 
@@ -127,7 +127,12 @@ func PlayerCount() Count {
 
 # A structure of many types
 
-
+Players need to be represented by a name and their score. We're going to need a way to organize this informtion- thankfully Go provides a way to assemble different types into useful structures, called a [struct](https://golang.org/ref/spec#Struct_types). We'll be able to make a type composed of several other types with the `struct` keyword. In order to declare a structure named Person, we would write `type Person struct{}`. In order to be useful, however, a structure should have *fields*. A field has a name and a type- if we were to declare our Person struct to have a field for their name (type string) you would write it like this:
+```
+type Person struct {
+  Name string
+}
+``` 
 # Give me the Methods to implement my Interface
 
 In order to get input from the user, we're probably going to need to *read* something they give us, hope it is a number, and then create our game with that many players. Thankfully the standard library has a useful package called [bufio](http://golang.org/pkg/bufio/), which stands for buffered input/output. 'Buffer' just means that your computer will put bits into memory while they get used. Since we're going to read input from the user, we're going to use the [bufio.NewReader](http://golang.org/pkg/bufio/#NewReader) function to create a reader for our user's input. Check out the input for that function:

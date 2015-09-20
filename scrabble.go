@@ -21,15 +21,15 @@ func main() {
 	g.Play(pointsInput, outputCalc)
 }
 
-func PlayerCount() int {
+func PlayerCount() game.Count {
 	r := bufio.NewReader(os.Stdin)
-	var c int
+	var c game.Count
 	fmt.Println("Enter number of players:")
 	for {
 		playerCount, err := r.ReadString('\n')
 		n, err := strconv.Atoi(playerCount[:len(playerCount)-1])
-		if err == nil && n != 1 {
-			c = n
+		if err == nil && n > 1 {
+			c = game.Count(n)
 			return c
 		}
 		if err != nil {

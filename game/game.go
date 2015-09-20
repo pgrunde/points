@@ -7,6 +7,8 @@ import (
 	"strings"
 )
 
+type Count int
+
 type Game struct {
 	PointsEarned int
 	Turn         int
@@ -18,9 +20,9 @@ type Player struct {
 	Scores []int
 }
 
-func CreateGame(n int) (g Game) {
+func CreateGame(n Count) (g Game) {
 	r := bufio.NewReader(os.Stdin)
-	for i := 0; i < n; i++ {
+	for i := Count(0); i < n; i++ {
 		fmt.Printf("Enter name for player %d: ", i+1)
 		for {
 			name, err := r.ReadString('\n')
