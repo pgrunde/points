@@ -61,13 +61,18 @@ func main() {
 
 Fundamentally [functions](https://golang.org/ref/spec#Function_types) take inputs, and produce outputs. The computer takes the things it values from memory, thinks about them in the way you told it to think, and finally returns to you a new memory, or some new type of thing to value and remember. Writing a function begins with the keyword `func`, a name for the function, a set of arguments (the inputs to our function), and a set of return values (the outputs of our function). There are then some curly brackets followed by the body of the function, or the code which will do things with our inputs. The body of the function lives between those curly braces in what we call a *block* of code. You can click on any function in the standard library to see its block of code. You can also share your own code with the Go Playground, like with [this example](TODO):
 ```
-// Here is a function that can do math! Type `int` can be used with math symbols `+ - / *` 
+// Here is a function that can do math! Type `int` can be used with 
+// the math symbols `+ - / *`
 // Increment takes the input `n int` and returns that integer plus one
 func Increment(n int) int {
   return n + 1
 }
 ```
-You might have already guessed what the [the Printf function](https://golang.org/pkg/fmt/#Printf) is doing in our program. It is replacing the `%d` with the value of our `count` variable and printing it to the console. This function comes from the fmt package in the standard library, so we call it by first typing out the package name `fmt` followed by a period and then the function name. Our `fmt.Printf` takes two [arguments](https://en.wikipedia.org/wiki/Argument_of_a_function)- arguments are the names describing the inputs for a function. They are always inside the parenthesis following the function name. First up in our arguments is a [string of characters](https://golang.org/ref/spec#String_types) which you see inside the quotes, it is a type `string`,  followed by that `count` variable we declared earler. Note that the two arguments are comma separated, as are all arguments passed to a function. If you [look at the function](https://golang.org/pkg/fmt/#Printf) in the standard library it looks like this: 
+You might have already guessed what the [the Printf function](https://golang.org/pkg/fmt/#Printf) is doing in our program. It is replacing the `%d` with the value of our `count` variable and printing it to the console. This function comes from the fmt package in the standard library, so we call it by first typing out the package name `fmt` followed by a period and then the function name. Our `fmt.Printf` takes two [arguments](https://en.wikipedia.org/wiki/Argument_of_a_function)- arguments are the names describing the inputs for a function. They are always inside the parenthesis following the function name. First up in our arguments is a [string of characters](https://golang.org/ref/spec#String_types) which you see inside the quotes, it is a type `string`,  followed by that `count` variable we declared earler. 
+```
+fmt.Printf("Creating game with %d players\n", count)
+```
+Note that the two arguments are comma separated, as are all arguments passed to a function. If you [look at the function](https://golang.org/pkg/fmt/#Printf) in the standard library it looks like this: 
 ```
 fmt.Printf(format string, a ...interface{})
 ```
